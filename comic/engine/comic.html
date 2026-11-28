@@ -105,6 +105,7 @@ function drawChar(sp,p,t){
  else if(sp.hat==='bow'){ctx.save();ctx.translate(bw*.35,top+20);ctx.rotate(-.3);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(-48,-30);ctx.lineTo(-48,30);ctx.closePath();path(hc);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(48,-30);ctx.lineTo(48,30);ctx.closePath();path(hc);ell(0,0,14,14,shade(hc,.2));ctx.restore()}
  else if(sp.hat==='tuft'){for(let i=-1;i<=1;i++){ctx.beginPath();ctx.moveTo(i*14,top+6);ctx.quadraticCurveTo(i*30,top-60,i*40+10,top-50+Math.sin(t*6+i)*4);path(null,OUT,10)}}
  else if(sp.hat==='beanie'){ctx.beginPath();ctx.arc(0,top+bh*.3,bw*.7,PI,2*PI);ctx.closePath();path(hc);rrect(-bw*.75,top+bh*.18,bw*1.5,34,14,shade(hc,.3));ell(0,top+bh*.3-bw*.7-8,22,22,shade(hc,.4))}
+ else if(sp.hat==='band'){ctx.save();ctx.beginPath();ctx.moveTo(0,cy-bh);ctx.bezierCurveTo(bw*1.05,cy-bh,bw*1.1,cy+bh*.2,bw*.95,cy+bh*.7);ctx.lineTo(-bw*.95,cy+bh*.7);ctx.bezierCurveTo(-bw*1.1,cy+bh*.2,-bw*1.05,cy-bh,0,cy-bh);ctx.clip();rrect(-bw*1.2,top+bh*.12,bw*2.4,30,0,hc,OUT,6);ctx.restore();line([bw*.9,top+bh*.18,bw*1.3,top+bh*.1+Math.sin(t*8)*8],hc,12);line([bw*.9,top+bh*.2,bw*1.25,top+bh*.3+Math.sin(t*8+1)*8],hc,12)}
  else if(sp.hat==='crown'){ctx.beginPath();ctx.moveTo(-bw*.5,top+10);ctx.lineTo(-bw*.5,top-60);ctx.lineTo(-bw*.25,top-25);ctx.lineTo(0,top-75);ctx.lineTo(bw*.25,top-25);ctx.lineTo(bw*.5,top-60);ctx.lineTo(bw*.5,top+10);ctx.closePath();path('#ffcc22')}
  // arms on top
  const hl=arm(-1,p.armL??-60,p.reachL,p.holdL),hr=arm(1,p.armR??-60,p.reachR,p.holdR);
@@ -129,6 +130,10 @@ function bird(x,y,s,flap,opts={}){ctx.save();ctx.translate(x,y);ctx.scale(s*(opt
  if(opts.hold){ctx.save();ctx.translate(82,-24);opts.hold();ctx.restore()}
  ctx.save();ctx.translate(10,-20);ctx.rotate(wa);ctx.beginPath();ctx.ellipse(-28,0,50,20,.2,0,2*PI);path('#8794ad',OUT,6);ctx.restore();
  ctx.restore()}
+function bulb(x,y,s,t){ctx.save();ctx.translate(x,y);ctx.scale(s,s);for(let i=0;i<8;i++){const a=i*PI/4;line([Math.cos(a)*70,Math.sin(a)*70-10,Math.cos(a)*95,Math.sin(a)*95-10],'#ffd23f',8)}
+ ell(0,-10,48,52,'#fff27a',OUT,7);rrect(-22,36,44,30,6,'#aab',OUT,6);ctx.restore()}
+function balloon(x,y,ax,ay,col,t,i){const bx=x+Math.sin(t*2+i)*8;ctx.beginPath();ctx.moveTo(ax,ay);ctx.quadraticCurveTo((ax+bx)/2+Math.sin(t*3+i)*12,(ay+y)/2,bx,y+60);path(null,OUT,3);
+ ell(bx,y,48,60,col,OUT,6);ell(bx-16,y-22,10,16,'rgba(255,255,255,.6)',null);ctx.beginPath();ctx.moveTo(bx-8,y+66);ctx.lineTo(bx+8,y+66);ctx.lineTo(bx,y+56);ctx.closePath();path(col,OUT,4)}
 // ---------- effects ----------
 function sparkle(x,y,s,t){ctx.save();ctx.translate(x,y);ctx.rotate(t*2);ctx.scale(s,s);ctx.beginPath();for(let i=0;i<8;i++){const r=i%2?10:34,a=i*PI/4;ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r)}ctx.closePath();path('#fff6a0','#f5b700',4);ctx.restore()}
 function burst(x,y,s,col='#ffd23f',col2='#ff5a3c'){ctx.save();ctx.translate(x,y);ctx.scale(s,s);for(const[r1,r2,c]of[[160,90,col2],[110,60,col]]){ctx.beginPath();for(let i=0;i<24;i++){const r=i%2?r2:r1*(0.8+rnd(i)*.4),a=i*PI/12;ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r)}ctx.closePath();path(c,OUT,7)}ctx.restore()}

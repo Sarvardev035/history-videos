@@ -63,6 +63,31 @@ def trombone():
         out.append(v*env(len(v), .03, .12))
     return np.concatenate(out)*.7
 S['sadtrombone'] = trombone
+S['kick'] = lambda: (sweep(150, 45, .25)*np.exp(-9*T(.25))*1.3)
+S['hat'] = lambda: bp_noise(.04, .6, .98)*np.exp(-80*T(.04))*.5
+S['clap'] = lambda: bp_noise(.12, .15, .8)*np.exp(-30*T(.12))*1.1
+S['bass'] = lambda: lp(sweep(55, 55, .4, 'saw'), .08)*env(int(SR*.4), .005, .2)*1.2
+S['drop'] = lambda: (sweep(2000, 60, .6, 'saw')*.25+tone(50, 1.0, (1, .5), 3)*1.2+bp_noise(1.0, .02, .5)*np.exp(-5*T(1.0))*.6)[:int(SR*.6)] if False else np.concatenate([sweep(2000, 60, .4, 'saw')*.2, tone(48, 1.0, (1, .5), 3)*1.3])
+S['scratch'] = lambda: np.concatenate([lp(sweep(900, 200, .18, 'saw'), .3)*.6, lp(sweep(300, 1100, .14, 'saw'), .3)*.6])*env(int(SR*.32), .002, .05)
+S['click'] = lambda: bp_noise(.03, .2, .95)*np.exp(-120*T(.03))*1.5
+S['door'] = lambda: (lp(sweep(140, 90, .5, 'saw'), .05)*.8+bp_noise(.5, .01, .2)*.3)*env(int(SR*.5), .01, .2)
+S['creak'] = lambda: lp(sweep(380, 300, .9, 'saw', .2, 23), .2)*env(int(SR*.9), .05, .3)*.6
+S['tiptoe'] = lambda: np.concatenate([np.concatenate([tone(f, .12, (1,), 30)*.4, np.zeros(int(SR*.13))]) for f in (523, 587, 523, 587)])
+S['heartbeat'] = lambda: np.concatenate([tone(50, .15, (1, .5), 18)*1.4, np.zeros(int(SR*.08)), tone(48, .2, (1, .5), 14)*1.1])
+S['wobble'] = lambda: sweep(200, 200, .6, 'sine', .3, 9)*env(int(SR*.6), .01, .3)*.5
+S['magic'] = lambda: sum(tone(f, .9, (1, .2), 4)*.25*(i % 2 or 1) for i, f in enumerate((1047, 1319, 1568, 2093)))
+S['poof'] = lambda: bp_noise(.5, .02, .4)*np.exp(-6*T(.5))*1.3
+S['cluck'] = lambda: np.concatenate([lp(sweep(f, f*.7, .08, 'saw'), .4)*env(int(SR*.08)) for f in (900, 1100, 800)])*.8
+S['grunt'] = lambda: lp(sweep(140, 110, .45, 'saw', .05, 30), .1)*env(int(SR*.45), .03, .2)*1.0
+S['strain'] = lambda: lp(sweep(220, 260, 1.0, 'saw', .04, 25), .12)*env(int(SR*1.0), .05, .2)*.6
+S['inflate'] = lambda: (bp_noise(.5, .05, .5)*.4+sweep(300, 900, .5)*.15)*env(int(SR*.5), .05, .1)
+S['crowd'] = lambda: sum(lp(noise(1.5), .1+.05*i)*.25 for i in range(3))*env(int(SR*1.5), .2, .6)*1.5
+S['ding2'] = lambda: tone(1318, .8, (1, .4), 4)*.5
+S['sizzle'] = lambda: bp_noise(1.2, .3, .9)*(0.6+0.4*np.sin(2*np.pi*13*T(1.2)))*env(int(SR*1.2), .05, .3)*.4
+S['rain'] = lambda: bp_noise(2.0, .2, .9)*env(int(SR*2.0), .2, .5)*.5
+S['thunder'] = lambda: lp(noise(1.6), .02)*np.exp(-2.5*T(1.6))*6
+S['wind'] = lambda: bp_noise(1.5, .01, .08)*env(int(SR*1.5), .3, .6)*5
+S['gulp'] = lambda: sweep(300, 150, .12)*env(int(SR*.12))*.7
 
 def music(dur, bpm, duck):
     beat = 60/bpm; n = int(SR*dur); out = np.zeros(n)
@@ -83,7 +108,7 @@ def music(dur, bpm, duck):
         add(bp_noise(.03, .6, .98)*np.exp(-90*T(.03))*.08, s)  # hat
         i += 1; t0 += beat/2
     g = np.ones(n)
-    for a, b in duck: g[int(a*SR):int(b*SR)] = .25
+    for d in duck: g[int(d[0]*SR):int(d[1]*SR)] = d[2] if len(d) > 2 else .25
     g = np.convolve(g, np.ones(2400)/2400, 'same')
     fade = int(SR*.6); out[-fade:] *= np.linspace(1, 0, fade)
     return out*g
